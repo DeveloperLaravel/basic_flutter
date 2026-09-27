@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_new/core/theme/app_colors.dart';
+import 'package:home_new/name/name_bloc.dart';
+import 'package:home_new/name_bloc_page.dart';
 
 import 'core/theme/app_theme.dart';
 import 'name_page.dart';
@@ -35,7 +38,9 @@ class _MyAppState extends State<MyApp> {
     themeMode: isDark
       ?  ThemeMode.light : 
          ThemeMode.dark,
-      home:   MyHomePage(press: changeTheme, isDark: isDark,),
+      home: 
+      
+        MyHomePage(press: changeTheme, isDark: isDark,),
     );
   }
 }
@@ -63,8 +68,11 @@ class MyHomePage extends StatelessWidget {
             ))
         ],
       ),
-      body: const  NamePage(),
-
+      body: 
+      BlocProvider(create: (_)=>NameBloc(),
+      child: const NameBlocPage(),)
+      
+// const  NamePage(),
         
    
     );
