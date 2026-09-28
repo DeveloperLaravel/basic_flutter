@@ -22,3 +22,15 @@ class StartEditEvent extends NameEvent {
 
   StartEditEvent(this.index);
 }
+class UpdateNameEvent extends NameEvent {
+  final int index;
+  final String name;
+
+  UpdateNameEvent(this.index, this.name);
+}
+
+class DeleteNameEvent extends NameEvent {
+  final int index;
+
+  DeleteNameEvent(this.index);
+}

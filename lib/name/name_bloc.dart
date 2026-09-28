@@ -6,6 +6,51 @@ import 'name_state.dart';
 
 class NameBloc extends Bloc<NameEvent,NameState>{
   NameBloc() : super( NameInitial()){
+
+
+
+
+
+
+on<DeleteNameEvent>((event, emit) {
+  final names = List<String>.from(state.names);
+  final completed = List<bool>.from(state.completed);
+  final isHidden = List<bool>.from(state.isHidden);
+
+  names.removeAt(event.index);
+  completed.removeAt(event.index);
+  isHidden.removeAt(event.index);
+
+  emit(
+    NameState(
+      names: names,
+      completed: completed,
+      isHidden: isHidden,
+    ),
+  );
+});
+
+
+
+
+
+
+
+on<UpdateNameEvent>((event, emit) {
+  final names = List<String>.from(state.names);
+
+  names[event.index] = event.name;
+
+  emit(
+    NameState(
+      names: names,
+      completed: state.completed,
+      isHidden: state.isHidden,
+    ),
+  );
+});
+
+
     on<ToggleHiddenEvent>((event, emit) {
         final isHidden = List<bool>.from(state.isHidden);
 
@@ -40,6 +85,7 @@ class NameBloc extends Bloc<NameEvent,NameState>{
       emit(
         NameState(names: names, completed: completed, isHidden: isHidden)
       );
+
 
     })
     );

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:home_new/core/theme/app_colors.dart';
 import 'package:home_new/name/name_bloc.dart';
 import 'package:home_new/name_bloc_page.dart';
 
 import 'core/theme/app_theme.dart';
-import 'name_page.dart';
 
 
 void main() {
@@ -70,7 +68,7 @@ class MyHomePage extends StatelessWidget {
       ),
       body: 
       BlocProvider(create: (_)=>NameBloc(),
-      child: const NameBlocPage(),)
+      child:  NameBlocPage(),)
       
 // const  NamePage(),
         

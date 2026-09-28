@@ -6,7 +6,7 @@ import 'package:home_new/name/name_event.dart';
 import 'name/name_state.dart';
 
 class NameBlocPage extends StatefulWidget {
-  const NameBlocPage({super.key});
+   NameBlocPage({super.key});
 
   @override
   State<NameBlocPage> createState() => _NameBlocPageState();
@@ -14,10 +14,8 @@ class NameBlocPage extends StatefulWidget {
 
 class _NameBlocPageState extends State<NameBlocPage> {
   final TextEditingController nameController = TextEditingController();
- 
 
-
-
+ int? editIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +23,30 @@ class _NameBlocPageState extends State<NameBlocPage> {
       body: Column(
         children: [
           TextField(controller: nameController),
+          SizedBox(height: 20,),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              ElevatedButton(
+           
+               ElevatedButton(
                 onPressed: () {
-                  context.read<NameBloc>().add(
-                    AddNameEvent(nameController.text),
-                    
-                  );
-                },
+    if (editIndex != null) {
+      context.read<NameBloc>().add(
+        UpdateNameEvent(
+          editIndex!,
+          nameController.text,
+        ),
+      );
+
+      editIndex = null;
+    } else {
+      context.read<NameBloc>().add(
+        AddNameEvent(nameController.text),
+      );
+    }
+
+    nameController.clear();
+  },
                 child: const Text('Save'),
               ),
               // ElevatedButton(onPressed: update, child: const Text('تعديل ')),
@@ -50,9 +63,6 @@ class _NameBlocPageState extends State<NameBlocPage> {
                         return Expanded(child: Center(child: Text('لا يوجد اسم')));
 
                       }
-                      
-                      
-                      
                       
                       return ListView.builder(
                         itemCount: state.names.length,
@@ -83,6 +93,8 @@ class _NameBlocPageState extends State<NameBlocPage> {
                               children: [
                                 IconButton(
                                   onPressed: () {
+                                    editIndex = index;
+                                    nameController.text = state.names[index];
                                     // editName(index);
                                     // editIndex = index;
                                   },
@@ -99,6 +111,16 @@ class _NameBlocPageState extends State<NameBlocPage> {
                                     state.isHidden[index]
                                         ? Icons.visibility_off
                                         : Icons.visibility,
+                                  ),
+                                ),
+                                 IconButton(
+                                  onPressed: () {
+                                
+
+                                  },
+                                  icon: Icon(
+                                    Icons.remove
+                                       
                                   ),
                                 ),
                                 // IconButton(
