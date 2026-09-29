@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_new/name/presentation/bloc/name_bloc.dart';
 import 'package:home_new/name/presentation/pages/name_bloc_page.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 import 'core/theme/app_theme.dart';
 import 'name/data/datasource/name_local_datasource.dart';

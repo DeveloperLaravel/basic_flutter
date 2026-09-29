@@ -41,7 +41,7 @@ class _NameBlocPageState extends State<NameBlocPage> {
 print('EVENT TYPE: ${event.runtimeType}');
 
 context.read<NameBloc>().add(event);
-
+ nameController.clear();
 
   }else {
      print('ADDING: ${nameController.text}');

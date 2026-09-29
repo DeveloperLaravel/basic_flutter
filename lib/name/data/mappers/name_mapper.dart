@@ -11,10 +11,14 @@ NameEntity toEntity(){
 
 extension NameEntityMapper on NameEntity{
   NameModel toModel(){
-    return NameModel()
-    ..id = id
+    final model = NameModel()
     ..name = name
     ..completed = completed
     ..isHidden = isHidden;
+    if (id != 0) {
+      model.id = id;
+    }
+
+    return model;
   }
 }
