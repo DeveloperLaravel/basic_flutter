@@ -1,17 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:home_new/name/name_bloc.dart';
-import 'package:home_new/name_bloc_page.dart';
+import 'package:home_new/name/presentation/bloc/name_bloc.dart';
+import 'package:home_new/name/presentation/pages/name_bloc_page.dart';
+import 'package:isar/isar.dart';
 
 import 'core/theme/app_theme.dart';
+import 'name/data/datasource/name_local_datasource.dart';
+import 'name/data/models/name_model.dart';
+import 'name/data/repository/name_repository_impl.dart';
+import 'name/domain/usecases/add_name_usecase.dart';
+import 'name/domain/usecases/delete_name_usecase.dart';
+import 'name/domain/usecases/get_names_usecase.dart';
+import 'name/domain/usecases/update_name_usecase.dart';
+import 'package:path_provider/path_provider.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+ final dir = await getApplicationDocumentsDirectory();
+
+  final isar = await Isar.open(
+    [NameModelSchema], directory: dir.path, 
+  );
+// await isar.writeTxn(() async {
+//   await isar.nameModels.clear();
+// });
+  final datasource = NameLocalDatasource(
+    isar: isar,
+  );
+    final repository = NameRepositoryImpl(
+    datasource: datasource,
+  );
+  final addNameUsecase = AddNameUsecase(
+  repository: repository,
+);
+  final getNamesUsecase = GetNamesUsecase(
+  repository: repository,
+);
+final updateNameUsecase = UpdateNameUsecase(
+  repository: repository,
+);
+  final deleteNameUsecase = DeleteNameUsecase(
+  repository: repository,
+);
 
 
-void main() {
-  runApp(const MyApp());
+  runApp( MyApp(addNameUsecase: addNameUsecase, getNamesUsecase: getNamesUsecase, deleteNameUsecase: deleteNameUsecase, updateNameUsecase: updateNameUsecase,));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.addNameUsecase, required this.getNamesUsecase, required this.deleteNameUsecase, required this.updateNameUsecase});
+  final AddNameUsecase addNameUsecase;
+  final GetNamesUsecase getNamesUsecase;
+  final UpdateNameUsecase updateNameUsecase;
+  final   DeleteNameUsecase deleteNameUsecase;
+  
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -38,16 +81,20 @@ class _MyAppState extends State<MyApp> {
          ThemeMode.dark,
       home: 
       
-        MyHomePage(press: changeTheme, isDark: isDark,),
+        MyHomePage(press: changeTheme, isDark: isDark,  addNameUsecase: widget.addNameUsecase, getNamesUsecase: widget.getNamesUsecase, deleteNameUsecase: widget.deleteNameUsecase, updateNameUsecase: widget.updateNameUsecase,),
     );
   }
 }
 
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key, required this.press, required this.isDark});
+  const MyHomePage({super.key, required this.press, required this.isDark, required this.addNameUsecase, required this.getNamesUsecase, required this.deleteNameUsecase, required this.updateNameUsecase});
   final VoidCallback press;
   final bool isDark;
+  final AddNameUsecase addNameUsecase;
+  final GetNamesUsecase getNamesUsecase;
+  final UpdateNameUsecase updateNameUsecase;
+  final DeleteNameUsecase deleteNameUsecase;
   @override
   Widget build(BuildContext context) {
     
@@ -67,7 +114,7 @@ class MyHomePage extends StatelessWidget {
         ],
       ),
       body: 
-      BlocProvider(create: (_)=>NameBloc(),
+      BlocProvider(create: (_)=>NameBloc(addNameUsecase: addNameUsecase, getNamesUsecase: getNamesUsecase, deleteNameUsecase: deleteNameUsecase, updateNameUsecase: updateNameUsecase),
       child:  NameBlocPage(),)
       
 // const  NamePage(),
@@ -75,128 +122,4 @@ class MyHomePage extends StatelessWidget {
    
     );
   }
-}
-
-// Demo data for our Onboarding screen
-List<Map<String, dynamic>> demoData = [
-  {
-    "illustration": "assets/images/1.png",
-    "title": "All your favorites",
-    "text":
-        "Order from the best local restaurants \nwith easy, on-demand delivery.",
-  },
-  {
-    "illustration": "assets/images/2.png",
-    "title": "Free delivery offers",
-    "text":
-        "Free delivery for new customers via Apple Pay\nand others payment methods.",
-  },
-  {
-    "illustration": "assets/images/3.png",
-    "title": "Choose your food",
-    "text":
-        "Easily find your type of food craving and\nyou’ll get delivery in wide range.",
-  },
-    {
-    "illustration": "assets/images/4.png",
-    "title": "Choose your food",
-    "text":
-        "Easily find your type of food craving and\nyou’ll get delivery in wide range.",
-  },
-];
-List<Product> demoProducts = [
-  Product(
-    id: 1,
-    images: [
-      "assets/images/1.png",
-      "assets/images/2.png",
-      "assets/images/3.png",
-      "assets/images/4.png"
-    ],
-    colors: [
-      const Color(0xFFF6625E),
-      const Color(0xFF836DB8),
-      const Color(0xFFDECB9C),
-      Colors.white,
-    ],
-    title: "Wireless Controller for PS4™",
-    price: 64.99,
-    description: 'description',
-    rating: 4.8,
-    isFavourite: true,
-    isPopular: true,
-  ),
-  Product(
-    id: 2,
-    images: [
-      "https://i.postimg.cc/CxD6nH74/Image-Popular-Product-2.png",
-    ],
-    colors: [
-      const Color(0xFFF6625E),
-      const Color(0xFF836DB8),
-      const Color(0xFFDECB9C),
-      Colors.white,
-    ],
-    title: "Nike Sport White - Man Pant",
-    price: 50.5,
-    description: 'description',
-    rating: 4.1,
-    isPopular: true,
-  ),
-  Product(
-    id: 3,
-    images: [
-      "https://i.postimg.cc/1XjYwvbv/glap.png",
-    ],
-    colors: [
-      const Color(0xFFF6625E),
-      const Color(0xFF836DB8),
-      const Color(0xFFDECB9C),
-      Colors.white,
-    ],
-    title: "Gloves XC Omega - Polygon",
-    price: 36.55,
-    description: 'description',
-    rating: 4.1,
-    isFavourite: true,
-    isPopular: true,
-  ),
-  Product(
-    id: 4,
-    images: [
-      "https://i.postimg.cc/d1QWXMYW/Image-Popular-Product-3.png",
-    ],
-    colors: [
-      const Color(0xFFF6625E),
-      const Color(0xFF836DB8),
-      const Color(0xFFDECB9C),
-      Colors.white,
-    ],
-    title: "Gloves XC Omega - Polygon",
-    price: 36.55,
-    description: 'description',
-    rating: 4.1,
-    isFavourite: false,
-    isPopular: true,
-  ),
-];
-class Product {
-  final int id;
-  final String title, description;
-  final List<String> images;
-  final List<Color> colors;
-  final double rating, price;
-  final bool isFavourite, isPopular;
-
-  Product({
-    required this.id,
-    required this.images,
-    required this.colors,
-    this.rating = 0.0,
-    this.isFavourite = false,
-    this.isPopular = false,
-    required this.title,
-    required this.price,
-    required this.description,
-  });
 }

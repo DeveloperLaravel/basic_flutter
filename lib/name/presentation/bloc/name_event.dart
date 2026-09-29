@@ -1,6 +1,7 @@
 
 abstract class NameEvent  {
 }
+class LoadNamesEvent extends NameEvent {}
 class AddNameEvent extends NameEvent {
   final String name;
   AddNameEvent(this.name);

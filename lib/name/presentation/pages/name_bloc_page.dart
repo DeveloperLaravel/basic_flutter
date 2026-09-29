@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:home_new/name/name_bloc.dart';
-import 'package:home_new/name/name_event.dart';
+import 'package:home_new/name/presentation/bloc/name_bloc.dart';
+import 'package:home_new/name/presentation/bloc/name_event.dart';
 
-import 'name/name_state.dart';
+import '../bloc/name_state.dart';
 
 class NameBlocPage extends StatefulWidget {
-   NameBlocPage({super.key});
+  const NameBlocPage({super.key});
 
   @override
   State<NameBlocPage> createState() => _NameBlocPageState();
@@ -15,7 +15,6 @@ class NameBlocPage extends StatefulWidget {
 class _NameBlocPageState extends State<NameBlocPage> {
   final TextEditingController nameController = TextEditingController();
 
- int? editIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -30,21 +29,26 @@ class _NameBlocPageState extends State<NameBlocPage> {
            
                ElevatedButton(
                 onPressed: () {
-    if (editIndex != null) {
-      context.read<NameBloc>().add(
-        UpdateNameEvent(
-          editIndex!,
-          nameController.text,
-        ),
-      );
+     final state = context.read<NameBloc>().state;
+     print('EDIT INDEX: ${state.editIndex}');
+  if (state.editIndex != null) {
+    print('SENDING UPDATE');
+   final event = UpdateNameEvent(
+  state.editIndex!,
+  nameController.text,
+);
 
-      editIndex = null;
-    } else {
-      context.read<NameBloc>().add(
-        AddNameEvent(nameController.text),
-      );
-    }
+print('EVENT TYPE: ${event.runtimeType}');
 
+context.read<NameBloc>().add(event);
+
+
+  }else {
+     print('ADDING: ${nameController.text}');
+  context.read<NameBloc>().add(
+    AddNameEvent(nameController.text),
+  );
+}
     nameController.clear();
   },
                 child: const Text('Save'),
@@ -57,16 +61,24 @@ class _NameBlocPageState extends State<NameBlocPage> {
               Expanded(
                   child: BlocBuilder<NameBloc, NameState>(
                     builder: (context, state) {
+                       print('UI NAMES: ${state.names}');
+                          // if(state.editName != null){
+                          //   nameController.text = state.editName!;
+                          // }
+
                       
                       if(state.names.isEmpty){
                         
-                        return Expanded(child: Center(child: Text('لا يوجد اسم')));
+                        return  Center(child: Text('لا يوجد اسم'));
 
                       }
                       
                       return ListView.builder(
                         itemCount: state.names.length,
                         itemBuilder: (context, index) {
+            
+
+
                           return ListTile(
                             title: state.isHidden[index]
                                 ? const SizedBox.shrink()
@@ -93,8 +105,12 @@ class _NameBlocPageState extends State<NameBlocPage> {
                               children: [
                                 IconButton(
                                   onPressed: () {
-                                    editIndex = index;
                                     nameController.text = state.names[index];
+                                    context.read<NameBloc>().add(
+                                    StartEditEvent(index),
+                                      );
+                                    // editIndex = index;
+                                    // nameController.text = state.names[index];
                                     // editName(index);
                                     // editIndex = index;
                                   },
@@ -115,7 +131,9 @@ class _NameBlocPageState extends State<NameBlocPage> {
                                 ),
                                  IconButton(
                                   onPressed: () {
-                                
+                                   context.read<NameBloc>().add(
+                                   DeleteNameEvent(index),
+                                   );
 
                                   },
                                   icon: Icon(
