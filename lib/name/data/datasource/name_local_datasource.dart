@@ -26,6 +26,7 @@ class NameLocalDatasource {
   Future<List<NameModel>> getAll() async {
   return await isar.nameModels.where().findAll();
 }
+
 Future<void> updateName(NameModel model) async {
   await isar.writeTxn(() async{
       await isar.nameModels.put(model);

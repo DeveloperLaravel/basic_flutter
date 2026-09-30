@@ -1,29 +1,13 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+import '../../domain/entities/name_entity.dart';
 
-class NameState {
+part 'name_state.freezed.dart';
 
-List<int> id;
-List<String> names;
-List<bool> completed;
-List <bool> isHidden;
-int? editIndex;
-String? editName;
-  NameState({
-    required this.id,
-    required this.names,
-    required this.completed,
-    required this.isHidden,
-    this.editIndex,
-    this.editName,
-  });
-}
-class NameInitial extends NameState {
-  NameInitial()
-      : super(
-          id: [],
-          names: [],
-          completed: [],
-          isHidden: [],
-          editIndex: null,
-          editName:null,
-        );
+@freezed
+abstract class NameState with _$NameState {
+  const factory NameState({
+    required List<NameEntity> names,
+    int? editIndex,
+    String? editName,
+  }) = _NameState;
 }
