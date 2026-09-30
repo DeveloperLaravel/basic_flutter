@@ -20,114 +20,178 @@ class NameBloc extends Bloc<NameEvent, NameState> {
     required this.deleteNameUsecase,
     required this.updateNameUsecase,
   }) : super(
-          const NameState(
-            names: [],
-          ),
+          const NameState.initial(),
         ) {
     // Load
-    on<LoadNamesEvent>((event, emit) async {
-      final names = await getNamesUsecase.execute();
+// Load
+on<LoadNamesEvent>((event, emit) async {
+  try {
+    emit(
+      const NameState.loading(),
+    );
 
-      emit(
-        state.copyWith(
-          names: names,
-        ),
-      );
-    });
+    final names = await getNamesUsecase.execute();
 
-    add(LoadNamesEvent());
-
+    emit(
+      NameState.loaded(
+        names,
+        null,
+        null,
+      ),
+    );
+  } catch (e) {
+    emit(
+      NameState.error(
+        e.toString(),
+      ),
+    );
+  }
+});
+  // تحميل تلقائي
+  add(LoadNamesEvent());
     // Start Edit
     on<StartEditEvent>((event, emit) async {
-      final name = state.names[event.index];
+    state.when(
+    initial: () {},
+    loading: () {},
+    loaded: (names, editIndex, editName) {
+       final name = names[event.index];
 
       emit(
-        state.copyWith(
-          editIndex: event.index,
-          editName: name.name,
+        NameState.loaded(
+          names,
+          event.index,
+          name.name,
         ),
       );
+    },
+    error: (message) {},
+  );
     });
 
     // Toggle Hidden
-    on<ToggleHiddenEvent>((event, emit) async {
-      final name = state.names[event.index];
+on<ToggleHiddenEvent>((event, emit) async {
 
+ await state.when(
+    initial: () {},
+
+    loading: () {},
+
+    loaded: (names, editIndex, editName) async {
+
+      final name = names[event.index];
       final updatedName = name.copyWith(
         isHidden: !name.isHidden,
       );
-
       await updateNameUsecase.execute(updatedName);
-
-      final names = await getNamesUsecase.execute();
-
+      final updatedNames =
+          await getNamesUsecase.execute();
       emit(
-        state.copyWith(
-          names: names,
+        NameState.loaded(
+          updatedNames,
+          editIndex,
+          editName,
         ),
       );
-    });
+    },
 
+    error: (message) {},
+  );
+});
     // Toggle Complete
     on<ToggleCompleteEvent>((event, emit) async {
-      final name = state.names[event.index];
+    await    state.when(
+    initial: () {},
 
-      final updatedName = name.copyWith(
-        completed: !name.completed,
-      );
+    loading: () {},
 
-      await updateNameUsecase.execute(updatedName);
-
-      final names = await getNamesUsecase.execute();
-
+    loaded: (names, editIndex, editName) async {
+      final name = names[event.index];
+ final updatedName = name.copyWith(
+    completed: !name.completed,
+  );
+   await updateNameUsecase.execute(updatedName);
+final updatedNames = await getNamesUsecase.execute();
       emit(
-        state.copyWith(
-          names: names,
+        NameState.loaded(
+          updatedNames,
+          editIndex,
+          editName,
         ),
       );
+    },
+
+    error: (message) {},
+  );
     });
 
     // Update
     on<UpdateNameEvent>((event, emit) async {
-      final oldName = state.names[event.index];
+    await  state.when(
+    initial: () {},
 
-      final updatedName = oldName.copyWith(
+    loading: () {},
+
+    loaded: (names, editIndex, editName) async {
+        final oldName = names[event.index];
+
+  final updatedName = oldName.copyWith(
         name: event.name,
       );
+    await updateNameUsecase.execute(updatedName);
 
-      await updateNameUsecase.execute(updatedName);
-
-      final names = await getNamesUsecase.execute();
-
+final updatedNames = await getNamesUsecase.execute();
       emit(
-        state.copyWith(
-          names: names,
-          editIndex: null,
-          editName: null,
+        NameState.loaded(
+          updatedNames,
+          null,
+          null,
         ),
       );
+    },
+
+    error: (message) {},
+  );
     });
 
     // Delete
     on<DeleteNameEvent>((event, emit) async {
-      final name = state.names[event.index];
+     await  state.when(
+    initial: () {},
 
-      final id = name.id;
+    loading: () {},
 
-      await deleteNameUsecase.execute(id);
-
-      final names = await getNamesUsecase.execute();
+    loaded: (names, editIndex, editName) async {
+             // 1️⃣ نأخذ الاسم من القائمة
+      final name = names[event.index];
+      // 2️⃣ نحذفه من قاعدة البيانات باستخدام id
+       await deleteNameUsecase.execute(name.id);
+        // 3️⃣ نقرأ القائمة الجديدة
+          final updatedNames =
+          await getNamesUsecase.execute();
 
       emit(
-        state.copyWith(
-          names: names,
+        NameState.loaded(
+          updatedNames,
+          editIndex,
+         editName,
         ),
       );
+    },
+
+    error: (message) {},
+  );
     });
 
     // Add
     on<AddNameEvent>((event, emit) async {
-      await addNameUsecase.execute(
+     await  state.when(
+    initial: () {},
+
+    loading: () {},
+
+    loaded: (names, editIndex, editName) async {
+       await addNameUsecase.execute(
         NameEntity(
           id: 0,
           name: event.name,
@@ -135,16 +199,20 @@ class NameBloc extends Bloc<NameEvent, NameState> {
           isHidden: false,
         ),
       );
-
-      final names = await getNamesUsecase.execute();
+  final updatedNames =
+          await getNamesUsecase.execute();
 
       emit(
-        state.copyWith(
-          names: names,
-          editIndex: null,
-          editName: null,
+        NameState.loaded(
+          updatedNames,
+          null,
+          null,
         ),
       );
+    },
+
+    error: (message) {},
+  );
     });
   }
 }

@@ -14,63 +14,30 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$NameState {
 
- List<NameEntity> get names; int? get editIndex; String? get editName;
-/// Create a copy of NameState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$NameStateCopyWith<NameState> get copyWith => _$NameStateCopyWithImpl<NameState>(this as NameState, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NameState&&const DeepCollectionEquality().equals(other.names, names)&&(identical(other.editIndex, editIndex) || other.editIndex == editIndex)&&(identical(other.editName, editName) || other.editName == editName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NameState);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(names),editIndex,editName);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'NameState(names: $names, editIndex: $editIndex, editName: $editName)';
+  return 'NameState()';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $NameStateCopyWith<$Res>  {
-  factory $NameStateCopyWith(NameState value, $Res Function(NameState) _then) = _$NameStateCopyWithImpl;
-@useResult
-$Res call({
- List<NameEntity> names, int? editIndex, String? editName
-});
-
-
-
-
-}
-/// @nodoc
-class _$NameStateCopyWithImpl<$Res>
-    implements $NameStateCopyWith<$Res> {
-  _$NameStateCopyWithImpl(this._self, this._then);
-
-  final NameState _self;
-  final $Res Function(NameState) _then;
-
-/// Create a copy of NameState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? names = null,Object? editIndex = freezed,Object? editName = freezed,}) {
-  return _then(_self.copyWith(
-names: null == names ? _self.names : names // ignore: cast_nullable_to_non_nullable
-as List<NameEntity>,editIndex: freezed == editIndex ? _self.editIndex : editIndex // ignore: cast_nullable_to_non_nullable
-as int?,editName: freezed == editName ? _self.editName : editName // ignore: cast_nullable_to_non_nullable
-as String?,
-  ));
-}
-
+class $NameStateCopyWith<$Res>  {
+$NameStateCopyWith(NameState _, $Res Function(NameState) __);
 }
 
 
@@ -88,11 +55,14 @@ extension NameStatePatterns on NameState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _NameState value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Error value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _NameState() when $default != null:
-return $default(_that);case _:
+case _Initial() when initial != null:
+return initial(_that);case _Loading() when loading != null:
+return loading(_that);case _Loaded() when loaded != null:
+return loaded(_that);case _Error() when error != null:
+return error(_that);case _:
   return orElse();
 
 }
@@ -110,14 +80,14 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _NameState value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Error value)  error,}){
 final _that = this;
 switch (_that) {
-case _NameState():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+case _Initial():
+return initial(_that);case _Loading():
+return loading(_that);case _Loaded():
+return loaded(_that);case _Error():
+return error(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -131,11 +101,14 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _NameState value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Error value)?  error,}){
 final _that = this;
 switch (_that) {
-case _NameState() when $default != null:
-return $default(_that);case _:
+case _Initial() when initial != null:
+return initial(_that);case _Loading() when loading != null:
+return loading(_that);case _Loaded() when loaded != null:
+return loaded(_that);case _Error() when error != null:
+return error(_that);case _:
   return null;
 
 }
@@ -152,10 +125,13 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<NameEntity> names,  int? editIndex,  String? editName)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<NameEntity> names,  int? editIndex,  String? editName)?  loaded,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _NameState() when $default != null:
-return $default(_that.names,_that.editIndex,_that.editName);case _:
+case _Initial() when initial != null:
+return initial();case _Loading() when loading != null:
+return loading();case _Loaded() when loaded != null:
+return loaded(_that.names,_that.editIndex,_that.editName);case _Error() when error != null:
+return error(_that.message);case _:
   return orElse();
 
 }
@@ -173,13 +149,13 @@ return $default(_that.names,_that.editIndex,_that.editName);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<NameEntity> names,  int? editIndex,  String? editName)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<NameEntity> names,  int? editIndex,  String? editName)  loaded,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
-case _NameState():
-return $default(_that.names,_that.editIndex,_that.editName);case _:
-  throw StateError('Unexpected subclass');
-
-}
+case _Initial():
+return initial();case _Loading():
+return loading();case _Loaded():
+return loaded(_that.names,_that.editIndex,_that.editName);case _Error():
+return error(_that.message);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -193,10 +169,13 @@ return $default(_that.names,_that.editIndex,_that.editName);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<NameEntity> names,  int? editIndex,  String? editName)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<NameEntity> names,  int? editIndex,  String? editName)?  loaded,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
-case _NameState() when $default != null:
-return $default(_that.names,_that.editIndex,_that.editName);case _:
+case _Initial() when initial != null:
+return initial();case _Loading() when loading != null:
+return loading();case _Loaded() when loaded != null:
+return loaded(_that.names,_that.editIndex,_that.editName);case _Error() when error != null:
+return error(_that.message);case _:
   return null;
 
 }
@@ -207,31 +186,95 @@ return $default(_that.names,_that.editIndex,_that.editName);case _:
 /// @nodoc
 
 
-class _NameState implements NameState {
-  const _NameState({required final  List<NameEntity> names, this.editIndex, this.editName}): _names = names;
+class _Initial implements NameState {
+  const _Initial();
   
 
- final  List<NameEntity> _names;
-@override List<NameEntity> get names {
-  if (_names is EqualUnmodifiableListView) return _names;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_names);
-}
 
-@override final  int? editIndex;
-@override final  String? editName;
 
-/// Create a copy of NameState
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$NameStateCopyWith<_NameState> get copyWith => __$NameStateCopyWithImpl<_NameState>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NameState&&const DeepCollectionEquality().equals(other._names, _names)&&(identical(other.editIndex, editIndex) || other.editIndex == editIndex)&&(identical(other.editName, editName) || other.editName == editName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'NameState.initial()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _Loading implements NameState {
+  const _Loading();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loading);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'NameState.loading()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _Loaded implements NameState {
+  const _Loaded(final  List<NameEntity> names, this.editIndex, this.editName): _names = names;
+  
+
+ final  List<NameEntity> _names;
+ List<NameEntity> get names {
+  if (_names is EqualUnmodifiableListView) return _names;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_names);
+}
+
+ final  int? editIndex;
+ final  String? editName;
+
+/// Create a copy of NameState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._names, _names)&&(identical(other.editIndex, editIndex) || other.editIndex == editIndex)&&(identical(other.editName, editName) || other.editName == editName));
 }
 
 
@@ -240,16 +283,16 @@ int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(
 
 @override
 String toString() {
-  return 'NameState(names: $names, editIndex: $editIndex, editName: $editName)';
+  return 'NameState.loaded(names: $names, editIndex: $editIndex, editName: $editName)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$NameStateCopyWith<$Res> implements $NameStateCopyWith<$Res> {
-  factory _$NameStateCopyWith(_NameState value, $Res Function(_NameState) _then) = __$NameStateCopyWithImpl;
-@override @useResult
+abstract mixin class _$LoadedCopyWith<$Res> implements $NameStateCopyWith<$Res> {
+  factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
+@useResult
 $Res call({
  List<NameEntity> names, int? editIndex, String? editName
 });
@@ -259,21 +302,87 @@ $Res call({
 
 }
 /// @nodoc
-class __$NameStateCopyWithImpl<$Res>
-    implements _$NameStateCopyWith<$Res> {
-  __$NameStateCopyWithImpl(this._self, this._then);
+class __$LoadedCopyWithImpl<$Res>
+    implements _$LoadedCopyWith<$Res> {
+  __$LoadedCopyWithImpl(this._self, this._then);
 
-  final _NameState _self;
-  final $Res Function(_NameState) _then;
+  final _Loaded _self;
+  final $Res Function(_Loaded) _then;
 
 /// Create a copy of NameState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? names = null,Object? editIndex = freezed,Object? editName = freezed,}) {
-  return _then(_NameState(
-names: null == names ? _self._names : names // ignore: cast_nullable_to_non_nullable
-as List<NameEntity>,editIndex: freezed == editIndex ? _self.editIndex : editIndex // ignore: cast_nullable_to_non_nullable
-as int?,editName: freezed == editName ? _self.editName : editName // ignore: cast_nullable_to_non_nullable
+@pragma('vm:prefer-inline') $Res call({Object? names = null,Object? editIndex = freezed,Object? editName = freezed,}) {
+  return _then(_Loaded(
+null == names ? _self._names : names // ignore: cast_nullable_to_non_nullable
+as List<NameEntity>,freezed == editIndex ? _self.editIndex : editIndex // ignore: cast_nullable_to_non_nullable
+as int?,freezed == editName ? _self.editName : editName // ignore: cast_nullable_to_non_nullable
 as String?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _Error implements NameState {
+  const _Error(this.message);
+  
+
+ final  String message;
+
+/// Create a copy of NameState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ErrorCopyWith<_Error> get copyWith => __$ErrorCopyWithImpl<_Error>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Error&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'NameState.error(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ErrorCopyWith<$Res> implements $NameStateCopyWith<$Res> {
+  factory _$ErrorCopyWith(_Error value, $Res Function(_Error) _then) = __$ErrorCopyWithImpl;
+@useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class __$ErrorCopyWithImpl<$Res>
+    implements _$ErrorCopyWith<$Res> {
+  __$ErrorCopyWithImpl(this._self, this._then);
+
+  final _Error _self;
+  final $Res Function(_Error) _then;
+
+/// Create a copy of NameState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(_Error(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

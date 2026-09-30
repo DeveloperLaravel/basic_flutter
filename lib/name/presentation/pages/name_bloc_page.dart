@@ -29,18 +29,34 @@ class _NameBlocPageState extends State<NameBlocPage> {
            
                ElevatedButton(
                 onPressed: () {
-     final state = context.read<NameBloc>().state;
-  if (state.editIndex != null) {
-   final event = UpdateNameEvent(
-  state.editIndex!,
-  nameController.text,
-);
-context.read<NameBloc>().add(event);
-  }else {
+
+  final state = context.read<NameBloc>().state;
+
+state.when(
+  initial: () {},
+
+  loading: () {},
+
+  loaded: (names, editIndex, editName) {
+    if (editIndex != null) {
+    context.read<NameBloc>().add(
+      UpdateNameEvent(
+        editIndex!,
+        nameController.text,
+      ),
+    );
+  }
+  else {
   context.read<NameBloc>().add(
-    AddNameEvent(nameController.text),
+    AddNameEvent(
+      nameController.text,
+    ),
   );
 }
+  },
+
+  error: (message) {},
+);
     nameController.clear();
   },
                 child: const Text('Save'),
@@ -50,109 +66,125 @@ context.read<NameBloc>().add(event);
           ),
           SizedBox(height: 20),
   
-             Expanded(
-               child: BlocListener<NameBloc, NameState>(
-                   listener: (context, state) {
-                     if (state.editName != null) {
-                       nameController.text = state.editName!;
-                     }
-                   },
-                      child: BlocBuilder<NameBloc, NameState>(
-                        builder: (context, state) {
-                              // if(state.editName != null){
-                              //   nameController.text = state.editName!;
-                              // }
-                  
-                          
-                          if(state.names.isEmpty){
-                            
-                            return  Center(child: Text('لا يوجد اسم'));
-                  
-                          }
-                          
-                          return ListView.builder(
-                            itemCount: state.names.length,
-                            itemBuilder: (context, index) {
-                              final name = state.names[index];
-                  
-                              
-                  
-                  
-                              return ListTile(
-                                title: name.isHidden
-                                    ? const SizedBox.shrink()
-                                    : Text(
-                                        name.name,
-                                        style: TextStyle(
-                                          decoration: name.completed
-                                              ? TextDecoration.lineThrough
-                                              : TextDecoration.none,
-                                        ),
-                                      ),
-                  
-                                leading: Checkbox(
-                                  value: name.completed,
-                                  onChanged: (_) {
-                                 context.read<NameBloc>().add(
-                                 ToggleCompleteEvent(index),
-                                );
-                  
-                                  },
-                                ),
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        // nameController.text = name.name;
-                                        context.read<NameBloc>().add(
-                                        StartEditEvent(index),
-                                          );
-                                      },
-                                      icon: Icon(Icons.edit),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                         context.read<NameBloc>().add(
-                        ToggleHiddenEvent(index),
-                      );
-                  
-                                      },
-                                      icon: Icon(
-                                        name.isHidden
-                                            ? Icons.visibility_off
-                                            : Icons.visibility,
-                                      ),
-                                    ),
-                                     IconButton(
-                                      onPressed: () {
-                                       context.read<NameBloc>().add(
-                                       DeleteNameEvent(index),
-                                       );
-                  
-                                      },
-                                      icon: Icon(
-                                        Icons.remove
-                                           
-                                      ),
-                                    ),
-                                    // IconButton(
-                                    //   onPressed: () {
-                                    //     remove(index);
-                                    //   },
-                                    //   icon: Icon(Icons.remove),
-                                    // ),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        },
+  Expanded(
+    child: BlocListener<NameBloc, NameState>(
+    listener: (context, state) {
+      state.when(
+        initial: () {},
+
+        loading: () {},
+
+        loaded: (names, editIndex, editName) {
+          if (editName != null) {
+            nameController.text = editName;
+          }
+        },
+
+        error: (message) {},
+      );
+    },
+
+     child: BlocBuilder<NameBloc, NameState>(
+    builder: (context, state) {
+      return state.when(
+        initial: () {
+          return const Center(
+            child: Text('البداية'),
+          );
+        },
+    
+        loading: () {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+    
+        loaded: (names, editIndex, editName) {
+          if (names.isEmpty) {
+            return const Center(
+              child: Text('لا يوجد اسم'),
+            );
+          }
+    
+          return ListView.builder(
+            itemCount: names.length,
+            itemBuilder: (context, index) {
+              final name = names[index];
+    
+              return ListTile(
+                title: name.isHidden
+                    ? const SizedBox.shrink()
+                    : Text(
+                        name.name,
+                        style: TextStyle(
+                          decoration: name.completed
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
+                        ),
+                      ),
+    
+                leading: Checkbox(
+                  value: name.completed,
+                  onChanged: (_) {
+                    context.read<NameBloc>().add(
+                      ToggleCompleteEvent(index),
+                    );
+                  },
+                ),
+    
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        context.read<NameBloc>().add(
+                          StartEditEvent(index),
+                        );
+                      },
+                      icon: const Icon(Icons.edit),
+                    ),
+    
+                    IconButton(
+                      onPressed: () {
+                        context.read<NameBloc>().add(
+                          ToggleHiddenEvent(index),
+                        );
+                      },
+                      icon: Icon(
+                        name.isHidden
+                            ? Icons.visibility_off
+                            : Icons.visibility,
                       ),
                     ),
+    
+                    IconButton(
+                      onPressed: () {
+                        context.read<NameBloc>().add(
+                          DeleteNameEvent(index),
+                        );
+                      },
+                      icon: const Icon(Icons.remove),
+                    ),
+                  ],
                 ),
-        ],
-      ),
+              );
+            },
+          );
+        },
+    
+        error: (message) {
+          return Center(
+            child: Text(message),
+          );
+        },
+      );
+    },
+    ),
+      
+    ),
+  )
+        ]
+               ),
     );
   }
 }
