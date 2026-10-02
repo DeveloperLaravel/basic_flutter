@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_new/name/presentation/bloc/name_bloc.dart';
 import 'package:home_new/name/presentation/pages/name_bloc_page.dart';
+import 'package:home_new/posts/domain/entities/post_entity.dart';
 import 'package:isar_community/isar.dart';
 
 import 'core/theme/app_theme.dart';
@@ -13,6 +14,9 @@ import 'name/domain/usecases/delete_name_usecase.dart';
 import 'name/domain/usecases/get_names_usecase.dart';
 import 'name/domain/usecases/update_name_usecase.dart';
 import 'package:path_provider/path_provider.dart';
+
+import 'posts/data/data/post_api_service.dart';
+import 'widget_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +48,9 @@ final updateNameUsecase = UpdateNameUsecase(
   repository: repository,
 );
 
+  final htt = PostApiService();
 
+   await htt.getPosts();
   runApp( MyApp(addNameUsecase: addNameUsecase, getNamesUsecase: getNamesUsecase, deleteNameUsecase: deleteNameUsecase, updateNameUsecase: updateNameUsecase,));
 }
 
@@ -71,7 +77,6 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       
       debugShowCheckedModeBanner: false,
     theme: AppTheme.lightTheme,
@@ -87,7 +92,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.press, required this.isDark, required this.addNameUsecase, required this.getNamesUsecase, required this.deleteNameUsecase, required this.updateNameUsecase});
   final VoidCallback press;
   final bool isDark;
@@ -95,27 +100,38 @@ class MyHomePage extends StatelessWidget {
   final GetNamesUsecase getNamesUsecase;
   final UpdateNameUsecase updateNameUsecase;
   final DeleteNameUsecase deleteNameUsecase;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  List<PostEntity> post=[
+
+  ];
+   int index = 0;
+ 
+
   @override
   Widget build(BuildContext context) {
-    
+   
     return Scaffold(
-      
       appBar: AppBar(
         
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text('الاسماء',style: TextStyle(color: Theme.of(context).colorScheme.primary),),
         actions: [
-          IconButton(onPressed: press, icon: Icon(
-            isDark ?
+          IconButton(onPressed: widget.press, icon: Icon(
+            widget.isDark ?
             Icons.dark_mode 
             :  Icons.light_mode ,
             ))
         ],
       ),
-      body: 
-      BlocProvider(create: (_)=>NameBloc(addNameUsecase: addNameUsecase, getNamesUsecase: getNamesUsecase, deleteNameUsecase: deleteNameUsecase, updateNameUsecase: updateNameUsecase),
-      child:  NameBlocPage(),)
+      body: WidgetPage(),
+      // BlocProvider(create: (_)=>NameBloc(addNameUsecase: addNameUsecase, getNamesUsecase: getNamesUsecase, deleteNameUsecase: deleteNameUsecase, updateNameUsecase: updateNameUsecase),
+      // child:  NameBlocPage(),)
       
 // const  NamePage(),
         

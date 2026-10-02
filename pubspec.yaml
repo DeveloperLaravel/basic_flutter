@@ -44,6 +44,7 @@ dependencies:
   injectable: ^2.5.1
   isar_community: ^3.3.2
   isar_community_flutter_libs: ^3.3.2
+  http: ^1.6.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
