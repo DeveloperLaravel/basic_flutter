@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_new/posts/domain/entities/post_entity.dart';
 
-import 'posts/data/data/post_api_service.dart';
-import 'posts/data/models/post_model.dart';
+import 'posts/presentation/bloc/post_bloc.dart';
+import 'posts/presentation/bloc/post_state.dart';
 
 
 class WidgetPage extends StatefulWidget {
@@ -12,34 +14,34 @@ class WidgetPage extends StatefulWidget {
 }
 
 class _WidgetPageState extends State<WidgetPage> {
-final PostApiService api = PostApiService();
   @override
   Widget build(BuildContext context) {
-    final posts =api.getPosts();
     return  Scaffold(
-      body: FutureBuilder<List<PostModel>>(
-  future: posts,
-  builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-  return const Center(
-    child: CircularProgressIndicator(),
-  );
+      body: BlocBuilder<PostBloc, PostState>(
+  builder: (context, state) {
+  if (state is PostLoading) {
+  return CircularProgressIndicator();
 }
 
-if (snapshot.hasError) {
-  return Center(
-    child: Text('حدث خطأ: ${snapshot.error}'),
-  );
-}
+if (state is PostSuccess) {
     return ListView.builder(
-  itemCount: snapshot.data!.length,
+  itemCount: state.posts.length,
   itemBuilder: (context, index) {
     return PostCard(
-      post: snapshot.data![index],
+      post: state.posts[index],
     );
   },
 );
+}
+            if (state is PostError) {
+            return Center(
+              child: Text(state.message),
+            );
+          }
+      return const SizedBox();
+
   },
+  
 ),
 
     );
@@ -49,7 +51,8 @@ if (snapshot.hasError) {
 
 class PostCard extends StatelessWidget {
   const PostCard({super.key, required this.post,});
-  final PostModel  post;
+  final PostEntity  post;
+
   @override
   Widget build(BuildContext context) {
     return  Padding(
@@ -77,12 +80,24 @@ class PostCard extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(height: 7,),
-                                 Text(
-                                  post.body
-                                  ,
-                                  style: Theme.of(context).textTheme.bodyLarge,),
+                                 Padding(
+                                   padding: const EdgeInsets.all(8.0),
+                                   child: Text(
+                                    post.body
+                                    ,maxLines: 
+                                    // isExpanded 
+                                    // ? 9
+                                    // : 
+                                    2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context).textTheme.bodyLarge,),
+                                 ),
                                    SizedBox(height: 7,),
-                                 ElevatedButton(onPressed: (){}, child: Text('قراءة المزيد'))
+                                 ElevatedButton(onPressed:(){}, child: Text( 
+                                  // isExpanded ? 
+                                  // 'عرض أقل' 
+                                  // :
+                                   'قراءة المزيد',))
                             ],
                                 ),
                         ),

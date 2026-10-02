@@ -7,8 +7,4 @@ class PostEntity {
     required this.title,
     required this.body,
   });
-  factory PostEntity.fr(Map<String,dynamic> json){
-    return PostEntity(id: json['id'], title: json['title'], body: json['body']);
-  }
-  
 }

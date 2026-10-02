@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:home_new/name/presentation/bloc/name_bloc.dart';
-import 'package:home_new/name/presentation/pages/name_bloc_page.dart';
 import 'package:home_new/posts/domain/entities/post_entity.dart';
 import 'package:isar_community/isar.dart';
 
@@ -15,7 +13,11 @@ import 'name/domain/usecases/get_names_usecase.dart';
 import 'name/domain/usecases/update_name_usecase.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'posts/data/data/post_api_service.dart';
+import 'posts/data/datasources/post_remote_data_source.dart';
+import 'posts/data/repositories/post_repository_impl.dart';
+import 'posts/domain/usecases/get_posts_use_case.dart';
+import 'posts/presentation/bloc/post_bloc.dart';
+import 'posts/presentation/bloc/post_event.dart';
 import 'widget_page.dart';
 
 Future<void> main() async {
@@ -48,9 +50,7 @@ final updateNameUsecase = UpdateNameUsecase(
   repository: repository,
 );
 
-  final htt = PostApiService();
-
-   await htt.getPosts();
+ 
   runApp( MyApp(addNameUsecase: addNameUsecase, getNamesUsecase: getNamesUsecase, deleteNameUsecase: deleteNameUsecase, updateNameUsecase: updateNameUsecase,));
 }
 
@@ -129,7 +129,18 @@ class _MyHomePageState extends State<MyHomePage> {
             ))
         ],
       ),
-      body: WidgetPage(),
+      body: 
+      // WidgetPage(),
+
+
+      BlocProvider(
+  create: (context) => PostBloc( GetPostsUseCase(
+    PostRepositoryImpl(
+      PostRemoteDataSource(),
+    ),
+  ),)..add(LoadPosts()),
+  child: WidgetPage(),
+)
       // BlocProvider(create: (_)=>NameBloc(addNameUsecase: addNameUsecase, getNamesUsecase: getNamesUsecase, deleteNameUsecase: deleteNameUsecase, updateNameUsecase: updateNameUsecase),
       // child:  NameBlocPage(),)
       
